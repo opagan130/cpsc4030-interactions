@@ -38,9 +38,8 @@ d3.csv("name-data.csv").then(function (data){
     var text = svg
                 .append('text')
                 .attr("id", 'topbartext')
-                .attr("x", dimensions.width - dimensions.margin.right)
+                .attr("x", 700)
                 .attr("y", 20)
-                .attr("text-anchor", "end")
                 .attr("dx", "-.8em")
                 .attr("dy", ".15em")
                 .attr("font-family", "sans-serif")
@@ -55,26 +54,14 @@ d3.csv("name-data.csv").then(function (data){
                 .attr('width', xScale.bandwidth)
                 .attr('y', function(d) { return yScale(d["Betty"]); })
                 .attr('height', function(d){return dimensions.boundedHeight - yScale(d["Betty"])})
-                .attr("fill", "steelblue")
-                .on('mouseover', function(event, d){
-                    d3.select(this)
-                        .attr("stroke", "black")
-                        .attr("stroke-width", 2)
-
-                    text.text("Count per year: " + d[nameSelected])
-                })
-                .on('mouseout', function(event, d){
-                    d3.select(this)
-                        .attr("stroke", "none")
-    })
-  
+                .attr("fill", "steelblue")  
 
 
     var xAxis = d3.axisBottom(xScale)
             .tickValues(xScale.domain().filter(function(d,i){ return !(i%4)})).tickSizeOuter(0)
 
     svg.append("g")
-        .attr("transform", "translate("+ dimensions.margin.left + "," + (dimensions.boundedHeight+dimensions.margin.top) + ")")
+        .attr("transform", "translate("+ dimensions.margin.left + "," + (dimensions.boundedHeight+dimensions.margin.bottom/4) + ")")
         .call(xAxis)
         .selectAll("text")	
         .style("text-anchor", "end")
@@ -89,52 +76,27 @@ d3.csv("name-data.csv").then(function (data){
         .call(yAxis)
 
 
-    
-d3.select("#betty").on('click', function(){
-    nameSelected = "Betty"
-    text.text("Count per year: 0")
+    d3.select("#betty").on('click', function(){
+        nameSelected = "Betty"
 
-    yScale.domain([0, d3.max(data, function(d){
-        return +d[nameSelected];
-    })])
-
-    changing_axis.transition()
-        .duration(1000)
-        .call(yAxis)
-
-    bars.transition()
-        .duration(1000)
-        .attr('x', function(d) { return xScale(d.year); })
-        .attr('width', xScale.bandwidth())
-        .attr('y', function(d) { return yScale(d[nameSelected]); })
-        .attr('height', function(d){
-            return dimensions.boundedHeight - yScale(d[nameSelected])
-        })
-        .style("fill", "steelblue")
-})
-
-
-    
-d3.select("#linda").on('click', function(){
-    nameSelected = "Linda"
-    text.text("Count per year: 0")
-
-    yScale.domain([0, d3.max(data, function(d){
-        return +d[nameSelected];
-    })])
-
-    changing_axis.transition()
-        .duration(1000)
-        .call(yAxis)
-
-    bars.transition()
-        .duration(1000)
-        .attr('x', function(d) { return xScale(d.year); })
-        .attr('width', xScale.bandwidth())
-        .attr('y', function(d) { return yScale(d[nameSelected]); })
-        .attr('height', function(d){
-            return dimensions.boundedHeight - yScale(d[nameSelected])
-        })
-        .style("fill", "steelblue")
+        bars.transition()
+            .attr('x', function(d) { return xScale(d.year); })
+            .attr('width', xScale.bandwidth)
+            .attr('y', function(d) { return yScale(d[nameSelected]); })
+            .attr('height', function(d){return dimensions.boundedHeight - yScale(d[nameSelected])})
+            .style("fill", "steelblue")
     })
+
+    d3.select("#linda").on('click', function(){
+        nameSelected = "Linda"
+    
+        bars.transition()
+        .attr('x', function(d) { return xScale(d.year); })
+        .attr('width', xScale.bandwidth)
+        .attr('y', function(d) { return yScale(d[nameSelected]); })
+        .attr('height', function(d){return dimensions.boundedHeight - yScale(d[nameSelected])})
+        .style("fill", "steelblue")
+        
+    })
+
 })
